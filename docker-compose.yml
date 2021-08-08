@@ -1,0 +1,68 @@
+version: "3.8"
+services:
+  mta-sts:
+    build:
+      args:
+        # Create a Cloudflare DNS token with Zone:DNS:Edit permissions for only the zones you need certificates for (https://dash.cloudflare.com/profile/api-tokens).
+        # Leave the placeholder value unchanged if you want to use HTTP for validation.
+        CLOUDFLARE_TOKEN: ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+
+        # Protocol version. Must be STSv1.
+        STS_VERSION: STSv1
+
+        # testing: External servers send you reports about encryption and other issues detected when connecting to your domain. MTA-STS encryption and authentication requirements are not enforced.
+        # enforce: If the SMTP connection doesn't have both authentication and encryption, mail servers set up for MTA-STS won't send messages to your domain. You also get reports from external servers about connection issues, as in testing mode.
+        # none: Tells external servers that your domain no longer supports MTA-STS. Use this value if you stop using MTA-STS.
+        STS_MODE: testing
+
+        # The policy must have an mx entry for each MX record added to the domain in standard Subject Alternative Name (SAN) format. Each mx entry must be on its own line in the policy file, as shown in the following example.
+        STS_MX_STRING: "mx: aspmx.l.google.com\nmx: alt1.aspmx.l.google.com\nmx: alt2.aspmx.l.google.com\nmx: alt3.aspmx.l.google.com\nmx: alt4.aspmx.l.google.com"
+
+        # Maximum time in seconds the policy is valid. The max_age is reset for an external server every time the server checks the policy. So, external servers can have different expiration dates for the same policy. The value must be between 86400 (1 day) and 31557600 (about 1 year).
+        STS_MAX_AGE: 86400
+      context: ./mta-sts
+    cap_add:
+      - NET_ADMIN
+    container_name: mta-sts
+    environment:
+      # Use this option if you want to use DNS for validation via Cloudflare.
+      # Comment out this option if you want to use HTTP instead.
+      DNSPLUGIN: cloudflare
+
+      # Only a single subdomain is required to turn on MTA-STS.
+      ONLY_SUBDOMAINS: "true"
+
+      # Create a separate user on the host system to prevent access to files and processes in the container.
+      # groupadd -g 9999 protected
+      # useradd  -g 9999 -u 9999 protected -s /usr/sbin/nologin
+      PGID: 9999
+      PUID: 9999
+
+      # To turn on MTA-STS for the domain, add a DNS record (A and AAAA or CNAME) at mta-sts.
+      SUBDOMAINS: mta-sts
+
+      # Specify a time zone to be used, for example Europe/Berlin.
+      TZ: Europe/Berlin
+
+      # Specify your domain.
+      URL: example.tld
+
+      # Use this option if you want Certbot to use DNS for validation via Cloudflare.
+      # Comment out this option if you want to use HTTP instead.
+      VALIDATION: dns
+      # Use this option if you want Certbot to use HTTP for validation.
+      # Comment out this option if you want to use DNS instead.
+      #VALIDATION: http
+
+      # Set to true to retrieve certs in staging mode. Rate limits will be much higher, but the resulting cert will not pass the browser's security test. Only to be used for testing purposes. Set to false to enable production mode.
+      STAGING: "true"
+    ports:
+      # Port 80 is only required if you use HTTP for validation.
+      #- "80:80"
+      - "443:443"
+    restart: always
+    volumes:
+      - config:/config
+
+volumes:
+  config:
