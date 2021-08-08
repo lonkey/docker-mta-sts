@@ -25,7 +25,7 @@ RUN mkdir -p /config-init/nginx/site-confs; \
         echo "more_clear_headers Server;"; \
         echo "more_clear_headers X-*;"; \
         echo "add_header Content-Security-Policy \"default-src 'self'\" always;"; \
-        echo "add_header Permissions-Policy: \"accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()\" always;"; \
+        echo "add_header Permissions-Policy \"accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()\" always;"; \
         echo "add_header Referrer-Policy no-referrer always;"; \
         echo "add_header Strict-Transport-Security max-age=31557600 always;"; \
         echo "add_header X-Content-Type-Options nosniff always;"; \
