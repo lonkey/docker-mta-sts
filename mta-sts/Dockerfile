@@ -1,4 +1,4 @@
-FROM linuxserver/swag:1.25.0
+FROM linuxserver/swag:1.27.0
 
 ARG CLOUDFLARE_TOKEN
 ARG STS_VERSION
@@ -18,7 +18,6 @@ RUN mkdir -p /config-init/dns-conf; \
 
 RUN mkdir -p /config-init/nginx/site-confs; \
     { \
-        echo "#server_tokens off;"; \
         echo "etag off;"; \
         echo "more_clear_headers Date;"; \
         echo "more_clear_headers Last-Modified;"; \
